@@ -26,28 +26,18 @@
         <div class="row">
             <form action="/checkscript" method="post" class="form-horizontal col-md-12">
                 <div class="form-group">
-                    @Html.LabelFor(m => m.ScriptSig, new
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.ScriptSig, new
    {
-       @class = "col-md-4 control-label"
+       @class = "control-label"
    })
+                        <a href="#" data-toggle="tooltip" title="Script with place holder like &lt;Alice.Property&gt; where Property can be Pubkey, Pubkeyhash, Key, Signature[;N]. In the case of signature, the optional N specify the OP_CODESEPARATOR used to compute the ScriptCode. If N is -1 or default, the whole scriptPubKey is used.">?</a>
+                    </div>
                     <div class="col-md-8">
                         @Html.TextAreaFor(o => o.ScriptSig, 3, 200, null)
                         @Html.ValidationMessageFor(m => m.ScriptSig)
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-4">
-                        @Html.LabelFor(m => m.ScriptCodes, new
-   {
-       @class = "control-label"
-   })
-                        <a href="#" data-toggle="tooltip" title="';' separeted list of index of the OP_CODESEPARATOR from which to sign. -1 to sign the whole scriptPubKey.">?</a>
-                    </div>
-                    <div class="col-md-8">
-                        @Html.TextBoxFor(m => m.ScriptCodes)
-                        @Html.ValidationMessageFor(m => m.ScriptCodes)
-                    </div>
-                </div>
+                </div>               
                 <div class="form-group">
                     @Html.LabelFor(m => m.ScriptPubKey, new
    {

@@ -32,12 +32,6 @@ namespace ProgrammingBitcoinFunding.Models
             get;
             set;
         }
-
-        public string ScriptCodes
-        {
-            get;
-            set;
-        }
         [AllowHtml]
         public string ScriptPubKey
         {

@@ -33,11 +33,6 @@ namespace ProgrammingBitcoinFunding
             get;
             set;
         }
-        public string ScriptCodes
-        {
-            get;
-            set;
-        }
     }
     public class ScriptRepository
     {

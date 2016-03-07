@@ -43,9 +43,13 @@
 
         <h3>Result</h3>
         <table class="table">
+            <colgroup>
+                <col class="col-md-2" />
+                <col class="col-md-10" />
+            </colgroup>
             <tr>
-                <th class="col-md-2">Validation</th>
-                <td class="col-md-10">
+                <th>Validation</th>
+                <td>
                     @if(Model.Result.Success)
                     { <span style="color:green">Valid</span>
                     }
@@ -56,11 +60,11 @@
                 </td>
             </tr>
             <tr>
-                <th class="col-md-2">ScriptSig</th>
-                <td>@Model.ExecutedScriptSig</td>
+                <th>ScriptSig</th>
+                <td style="max-width:100px;word-wrap:break-word;">@Model.ExecutedScriptSig</td>
             </tr>
             <tr>
-                <th class="col-md-2">ScriptPubKey</th>
+                <th>ScriptPubKey</th>
                 <td>@Model.ExecutedScriptPubKey</td>
             </tr>
         </table>
@@ -95,6 +99,11 @@
     <div class="row">
         <h3>CheckSig operations</h3>
         <table class="table">
+            <colgroup>
+                <col class="col-md-4" />
+                <col class="col-md-4" />
+                <col class="col-md-4" />
+            </colgroup>
             <thead class="thead-inverse">
                 <tr>
                     <th>ScriptCode</th>
@@ -107,8 +116,8 @@
                 {
                     <tr>
                         <td>@Model.Result.CheckSigs[i].ScriptCode</td>
-                        <td>@Model.Result.CheckSigs[i].SignedHash</td>
-                        <td>@Model.Result.CheckSigs[i].Signature</td>
+                        <td style="max-width:100px;word-wrap:break-word;">@Model.Result.CheckSigs[i].SignedHash</td>
+                        <td style="max-width:100px;word-wrap:break-word;">@Model.Result.CheckSigs[i].Signature</td>
                     </tr>
                 }
             </tbody>

@@ -27,10 +27,16 @@
     {
         <h3>Script @i</h3>
         <table class="table">
-            <tr><th class="col-md-2">String</th><td>@Model.DecomposedScripts[i].Script</td></tr>
-            <tr><th>Bytes</th><td>@Model.DecomposedScripts[i].Bytes</td></tr>
-            <tr><th>Hash</th><td>@Model.DecomposedScripts[i].Hash</td></tr>
-            <tr><th>PartialMerkleTree</th><td>@Model.DecomposedScripts[i].PartialMerkleTree</td></tr>
+            <colgroup>
+                <col class="col-md-1" />
+                <col class="col-md-11"/>
+            </colgroup>
+            <tbody>
+                <tr><th>String</th><td>@Model.DecomposedScripts[i].Script</td></tr>
+                <tr><th>Bytes</th><td style="max-width:100px;word-wrap:break-word;"><div>@Model.DecomposedScripts[i].Bytes</div></td></tr>
+                <tr><th>Hash</th><td style="max-width:100px;word-wrap:break-word;">@Model.DecomposedScripts[i].Hash</td></tr>
+                <tr><th>PartialMerkleTree</th><td style="max-width:100px;word-wrap:break-word;">@Model.DecomposedScripts[i].PartialMerkleTree</td></tr>
+            </tbody>
         </table>
         <h4>Size of commitment (Merkle Tree + Script)</h4>
         <table class="table">

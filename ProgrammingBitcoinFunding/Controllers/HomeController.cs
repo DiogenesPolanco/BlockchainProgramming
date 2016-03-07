@@ -261,7 +261,7 @@ namespace ProgrammingBitcoinFunding.Controllers
                 set;
             }
 
-            internal string GetValue(string element, Script prevScript)
+            internal string GetValue(string element, Script prevScript, IEnumerator<int> scriptCodeIndex)
             {
                 if(element.Equals("key", StringComparison.InvariantCultureIgnoreCase))
                     return Encoders.Hex.EncodeData(Key.ToBytes());
@@ -271,11 +271,33 @@ namespace ProgrammingBitcoinFunding.Controllers
                     return Encoders.Hex.EncodeData(Key.PubKey.Hash.ToBytes());
                 if(element.Equals("signature", StringComparison.InvariantCultureIgnoreCase))
                 {
+                    int index = -1;
+                    if(scriptCodeIndex.MoveNext())
+                        index = scriptCodeIndex.Current;
+
+                    prevScript = SubScript(index, prevScript);
+
                     Transaction tx = DummyTransaction();
                     var sig = tx.Inputs.AsIndexedInputs().First().Sign(Key, DummyCoin(prevScript), SigHash.All);
                     return Encoders.Hex.EncodeData(sig.ToBytes());
                 }
                 return null;
+            }
+
+            private Script SubScript(int index, Script prevScript)
+            {
+                if(index == -1)
+                    return prevScript;
+                var separatorIndex = -1;
+                List<Op> ops = new List<Op>();
+                foreach(var op in prevScript.ToOps())
+                {
+                    if(op.Code == OpcodeType.OP_CODESEPARATOR)
+                        separatorIndex++;
+                    if(separatorIndex >= index && !(separatorIndex == index && op.Code == OpcodeType.OP_CODESEPARATOR))
+                        ops.Add(op);
+                }
+                return new Script(ops.ToArray());
             }
 
             public static Coin DummyCoin(Script prevScript)
@@ -307,7 +329,7 @@ namespace ProgrammingBitcoinFunding.Controllers
         }
 
 
-        Script GetExecutedScript(string scriptTemplate, Script prevScript, Dictionary<string, Keyset> sets)
+        Script GetExecutedScript(string scriptTemplate, Script prevScript, Dictionary<string, Keyset> sets, IEnumerator<int> scriptCodeIndex)
         {
             StringBuilder executedScript = new StringBuilder();
             int lastToCopy = 0;
@@ -321,7 +343,7 @@ namespace ProgrammingBitcoinFunding.Controllers
                     sets.Add(name.ToLowerInvariant(), keyset);
                 }
                 var element = match.Groups[2].Value;
-                var replacement = keyset.GetValue(element, prevScript);
+                var replacement = keyset.GetValue(element, prevScript, scriptCodeIndex);
                 if(replacement == null)
                 {
                     throw new Exception("Element " + element + " unrecognized, possible values are pubkey, pubkeyhash ,key, signature");
@@ -351,13 +373,24 @@ namespace ProgrammingBitcoinFunding.Controllers
         {
             model.ScriptPubKey = model.ScriptPubKey ?? "";
             model.ScriptSig = model.ScriptSig ?? "";
-
+            model.ScriptCodes = model.ScriptCodes ?? "";
             bool parseProblem = false;
+
+            var scriptCodes = new List<int>();
+            try
+            {
+                scriptCodes = model.ScriptCodes.Split(';').Select(s => string.IsNullOrEmpty(s) ? -1 : int.Parse(s)).ToList();
+            }
+            catch(FormatException ex)
+            {
+                ModelState.AddModelError("ScriptCodes", "Parsing error");
+                parseProblem = true;
+            }
 
             Dictionary<string, Keyset> sets = new Dictionary<string, Keyset>();
             try
             {
-                model.ExecutedScriptPubKey = GetExecutedScript(model.ScriptPubKey, Script.Empty, sets);
+                model.ExecutedScriptPubKey = GetExecutedScript(model.ScriptPubKey, Script.Empty, sets, scriptCodes.GetEnumerator());
             }
             catch(FormatException ex)
             {
@@ -372,7 +405,7 @@ namespace ProgrammingBitcoinFunding.Controllers
 
             try
             {
-                model.ExecutedScriptSig = GetExecutedScript(model.ScriptSig, model.ExecutedScriptPubKey, sets);
+                model.ExecutedScriptSig = GetExecutedScript(model.ScriptSig, model.ExecutedScriptPubKey ?? Script.Empty, sets, scriptCodes.GetEnumerator());
             }
             catch(FormatException ex)
             {

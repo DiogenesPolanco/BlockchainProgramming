@@ -14,19 +14,34 @@
             <div class="form-group">
                 @Html.LabelFor(m => m.ScriptSig, new
    {
-       @class = "col-md-3 control-label"
+       @class = "col-md-4 control-label"
    })
-                <div class="col-md-9">
+                <div class="col-md-8">
                     @Html.TextAreaFor(o => o.ScriptSig, 3, 200, null)
+                    @Html.ValidationMessageFor(m => m.ScriptSig)
+                </div>
+            </div>
+            <div class="form-group">   
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.ScriptCodes, new
+   {
+       @class = "control-label"
+   })
+                    <a href="#" data-toggle="tooltip" title="';' separeted list of index of the OP_CODESEPARATOR from which to sign. -1 to sign the whole scriptPubKey.">?</a>
+                </div>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.ScriptCodes)
+                    @Html.ValidationMessageFor(m=>m.ScriptCodes)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.ScriptPubKey, new
    {
-       @class = "col-md-3 control-label"
+       @class = "col-md-4 control-label"
    })
-                <div class="col-md-9">
+                <div class="col-md-8">
                     @Html.TextAreaFor(o => o.ScriptPubKey, 5, 200, null)
+                    @Html.ValidationMessageFor(m => m.ScriptPubKey)
                 </div>
             </div>
             <div class="form-group">
@@ -83,7 +98,7 @@
                 </tr>
             </thead>
             <tbody>
-                @for(int i=0; i < Model.Result.StackValues.Length; i++)
+                @for(int i = 0; i < Model.Result.StackValues.Length; i++)
                 {
                     <tr>
                         <th class="col-md-2">@(-(i + 1))</th>

@@ -14,7 +14,7 @@
         <li><b>P2WPKH</b> : <a href="/checktx?txid=99e7484eafb6e01622c395c8cae7cb9f8822aab6ba993696b39df8b60b0f4b11">99e7484eafb6e01622c395c8cae7cb9f8822aab6ba993696b39df8b60b0f4b11</a></li>
         <li><b>P2WSH</b> : <a href="/checktx?txid=0eefee253b4ab0f7ff870e3efc620993c44f229edf7ee43ad96ec67f258f6ed9">0eefee253b4ab0f7ff870e3efc620993c44f229edf7ee43ad96ec67f258f6ed9</a></li>
         <li><b>P2SH(WPKH)</b> : <a href="/checktx?txid=fd46ba4b6c8bb8b0474e0304836174168d0ea93081137a99ddd9e106f6827232">fd46ba4b6c8bb8b0474e0304836174168d0ea93081137a99ddd9e106f6827232</a></li>
-        <li><b>P2SH(WSH)</b> : <a href="/checktx?txid=6e041844c9fc7a676282b64cce258a1469fe0a35b46ee02143ba9c1d3ac33a02">6e041844c9fc7a676282b64cce258a1469fe0a35b46ee02143ba9c1d3ac33a02</a></li>        
+        <li><b>P2SH(WSH)</b> : <a href="/checktx?txid=6e041844c9fc7a676282b64cce258a1469fe0a35b46ee02143ba9c1d3ac33a02">6e041844c9fc7a676282b64cce258a1469fe0a35b46ee02143ba9c1d3ac33a02</a></li>
     </ul>
 </p>
 <form action="/checktx" method="post">
@@ -25,61 +25,141 @@
 @if(Model.Result != null)
 {
     <h2>
-        Transaction @if(Model.Result.Success) { <span style="color:green">Valid</span>
-        }
-        else
-        {
-            <span style="color:red">Invalid</span>
-        } <a href="https://segnet.metaco.com/transactions/@Model.Result.Id" style="font-size: 10px;">Details</a>
+        Transaction<a href="https://segnet.metaco.com/transactions/@Model.Result.Id" style="font-size: 10px;">Details</a>
     </h2>
     <p>
-        <b>Core Size</b><span>: @Model.CoreSize <br/></span>
-        <b>Witness Size</b><span>: @Model.WitnessSize <br /></span>
-        @if(Model.HasWitness)
-        {        
-        <b>Total Cost (CoreSize*4 + WitSize)</b><span>: @Model.TransactionCost<br /></span>
-        <b>Estimated Total Cost without Segwit</b><span>: @Model.EstimatedCostNoWit <br /></span>
-        }
-        else
-        {
-            <b>Total Cost (CoreSize*4)</b><span>: @Model.TransactionCost<br /></span>
-            <b>Estimated Total Cost with Segwit</b><span>: @Model.EstimatedCostWit <br /></span>
-        }
-        <b>Saving</b><span>: @Model.Saving %<br /></span>
+        <table class="table">
+            <colgroup>
+                <col class="col-md-2" />
+                <col class="col-md-10" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <th>Validation</th>
+                    <td>
+                        @if(Model.Result.Success)
+                        { <span style="color:green">Valid</span>
+                        }
+                        else
+                        {
+                            <span style="color:red">Invalid</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>Core Size</th>
+                    <td>@Model.CoreSize</td>
+                </tr>
+                <tr>
+                    <th>Witness Size</th>
+                    <td>@Model.WitnessSize</td>
+                </tr>
+                
+                @if(Model.HasWitness)
+                {
+                    <tr>
+                        <th>Total Cost (CoreSize*4 + WitSize)</th>
+                        <td>@Model.TransactionCost</td>
+                    </tr>
+                    <tr>
+                        <th>Estimated Total Cost without Segwit</th>
+                        <td>@Model.EstimatedCostNoWit</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <th>Total Cost (CoreSize*4)</th>
+                        <td>@Model.TransactionCost</td>
+                    </tr>
+                    <tr>
+                        <th>Estimated Total Cost with Segwit</th>
+                        <td>@Model.EstimatedCostWit</td>
+                    </tr>
+                }
+                <tr>
+                    <th>Saving</th>
+                    <td>@Model.Saving %</td>
+                </tr>
+            </tbody>
+        </table>
     </p>
     for(int i = 0; i < Model.Result.InputResults.Count; i++)
     {
         var input = Model.Result.InputResults[i];
         <h3>
-            Input @i: @if(input.ScriptError == null)
-            {
-                <span style="color:green">Valid</span>
-            }
-            else
-            {
-                <span style="color:red">Invalid (@input.ScriptError)</span>
-            }
+            Input @i
         </h3>
         <p>
-            <b>Witness</b><span>: @input.Witness</span> <br />
-            <b>ScriptSig</b><span>: @input.ScriptSig</span> <br />
-            <b>Previous Output</b><span>: <a href="/checktx?txid=@input.PrevOut.Hash">@input.PrevOut.Hash</a>-@input.PrevOut.N</span> <br />
-            @if(input.ScriptPubKey != null)
-            {            
-            <b>ScriptPubKey</b><span>: @input.ScriptPubKey</span> <br />
-            <b>Amount</b><span>: @input.Amount</span> <br />
-            }
-            @if(input.P2SHRedeemScript != null)
-            {
-                <b>P2SH Redeem</b><span>: @input.P2SHRedeemScript</span> <br />
-            }
-            @if(input.SignatureHash != null)
-            {            
-            <b>SigHash</b><span>: @input.SignatureHash.Signature.SigHash</span> <br />
-            <b>Signature Hash</b><span>: @input.SignatureHash.Hash</span> <br />
-            <b>Script Code</b><span>: @input.SignatureHash.ScriptCode</span> <br />
-            <b>Hash Version</b><span>: @input.SignatureHash.HashVersion</span> <br />
-            }
+            <table class="table">
+                <colgroup>
+                    <col class="col-md-2" />
+                    <col class="col-md-10" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>Validation</th>
+                        <td>
+                            @if(input.ScriptError == null)
+                            { <span style="color:green">Valid</span>
+                            }
+                            else
+                            {
+                                <span style="color:red">Invalid (@input.ScriptError)</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Witness</th>
+                        <td style="max-width:100px;word-wrap:break-word;">@input.Witness</td>
+                    </tr>
+                    <tr>
+                        <th>ScriptSig</th>
+                        <td style="max-width:100px;word-wrap:break-word;">@input.ScriptSig</td>
+                    </tr>
+                    <tr>
+                        <th>Previous Output</th>
+                        <td><a href="/checktx?txid=@input.PrevOut.Hash">@input.PrevOut.Hash</a>-@input.PrevOut.N</td>
+                    </tr>
+                    @if(input.ScriptPubKey != null)
+                    {
+                        <tr>
+                            <th>ScriptPubKey</th>
+                            <td>@input.ScriptPubKey</td>
+                        </tr>
+                        <tr>
+                            <th>Amount</th>
+                            <td>@input.Amount</td>
+                        </tr>
+                    }
+                    @if(input.P2SHRedeemScript != null)
+                    {
+                        <tr>
+                            <th>P2SH Redeem</th>
+                            <td>@input.P2SHRedeemScript</td>
+                        </tr>
+                    }
+                    @if(input.SignatureHash != null)
+                    {
+                        <tr>
+                            <th>SigHash</th>
+                            <td>@input.SignatureHash.Signature.SigHash</td>
+                        </tr>
+                        <tr>
+                            <th>Signature Hash</th>
+                            <td>@input.SignatureHash.Hash</td>
+                        </tr>
+                        <tr>
+                            <th>Script Code</th>
+                            <td style="max-width:100px;word-wrap:break-word;">@input.SignatureHash.ScriptCode</td>
+                        </tr>
+                        <tr>
+                            <th>Hash Version</th>
+                            <td>@input.SignatureHash.HashVersion</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </p>
     }
 }

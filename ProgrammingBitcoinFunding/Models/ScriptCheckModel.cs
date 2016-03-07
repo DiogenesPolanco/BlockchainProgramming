@@ -16,6 +16,23 @@ namespace ProgrammingBitcoinFunding.Models
             get;
             set;
         }
+        public string SavedScriptLink
+        {
+            get;
+            set;
+        }
+
+        public string Run
+        {
+            get;
+            set;
+        }
+        public string Share
+        {
+            get;
+            set;
+        }
+
         public string ScriptCodes
         {
             get;
@@ -58,7 +75,7 @@ namespace ProgrammingBitcoinFunding.Models
         {
             get;
             set;
-        }
+        }        
 
         public StackValueModel[] StackValues
         {

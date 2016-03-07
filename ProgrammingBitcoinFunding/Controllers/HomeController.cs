@@ -357,20 +357,70 @@ namespace ProgrammingBitcoinFunding.Controllers
             return new Script(executedScript.ToString());
         }
 
-        [Route("checkscript")]
-        public ViewResult ScriptCheck()
+
+        [Route("savescript")]
+        [HttpPost]
+        public ActionResult SaveScript(ScriptCheckModel model)
         {
-            return ScriptCheck(new ScriptCheckModel()
+            SavedScript saved = new SavedScript();
+            saved.ScriptCodes = model.ScriptCodes;
+            saved.ScriptPubKey = model.ScriptPubKey;
+            saved.ScriptSig = model.ScriptSig;
+            repo.InsertScript(saved);
+            return RedirectToAction("ScriptCheck", "Home", new
+            {
+                savedScript = saved.Id.ToString()
+            });
+        }
+        ScriptRepository repo = new ScriptRepository();
+        [Route("checkscript")]
+        public ActionResult ScriptCheck(string savedScript = null)
+        {
+            SavedScript script = null;
+            Guid id;
+            if(!String.IsNullOrEmpty(savedScript) && Guid.TryParse(savedScript, out id))
+            {
+                try
+                {
+                    script = repo.GetScript(id);
+
+                }
+                catch
+                {
+                }
+            }
+
+
+            var model = new ScriptCheckModel()
             {
                 ScriptPubKey = "OP_DUP OP_HASH160 <Alice.PubkeyHash> OP_EQUALVERIFY OP_CHECKSIG",
-                ScriptSig = "<Alice.Signature> <Alice.Pubkey>"
-            });
+                ScriptSig = "<Alice.Signature> <Alice.Pubkey>",
+            };
+            if(script != null)
+            {
+                model.SavedScriptLink = GetScriptLink(script.Id);
+                model.ScriptPubKey = script.ScriptPubKey;
+                model.ScriptSig = script.ScriptSig;
+                model.ScriptCodes = script.ScriptCodes;
+            }
+            return ScriptCheck(model);
+        }
+
+        private string GetScriptLink(Guid id)
+        {
+            return this.Url.Action("ScriptCheck", "Home", new
+            {
+                savedScript = id
+            }, this.Request.Url.Scheme);
         }
 
         [Route("checkscript")]
         [HttpPost]
-        public ViewResult ScriptCheck(ScriptCheckModel model)
+        public ActionResult ScriptCheck(ScriptCheckModel model)
         {
+            if(!string.IsNullOrEmpty(model.Share))
+                return SaveScript(model);
+
             model.ScriptPubKey = model.ScriptPubKey ?? "";
             model.ScriptSig = model.ScriptSig ?? "";
             model.ScriptCodes = model.ScriptCodes ?? "";

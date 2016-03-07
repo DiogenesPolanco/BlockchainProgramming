@@ -139,7 +139,7 @@ namespace ProgrammingBitcoinFunding.Controllers
                 "\t8a32aa42900a5f3cdc1c9bf93f12597ca56f9335210d019e12aed94528cacc81 \r\n" +
             "OP_ENDIF \r\n" +
             "OP_CHECKSIG";
-            return View(new MASTModel()
+            return MAST(new MASTModel()
             {
                 Script = script
             });

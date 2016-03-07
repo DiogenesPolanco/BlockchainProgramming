@@ -17,11 +17,27 @@
         <li><b>P2SH(WSH)</b> : <a href="/checktx?txid=6e041844c9fc7a676282b64cce258a1469fe0a35b46ee02143ba9c1d3ac33a02">6e041844c9fc7a676282b64cce258a1469fe0a35b46ee02143ba9c1d3ac33a02</a></li>
     </ul>
 </p>
-<form action="/checktx" method="post">
-    @Html.ValidationMessageFor(o => o.Transaction)<br />
-    @Html.TextAreaFor(o => o.Transaction, 15, 400, null)  <br />
-    <input type="submit" value="Submit" />
-</form>
+<div class="row">
+    <div class="col-md-4">
+        <form action="/checktx" method="post">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Transaction, new
+   {
+       @class = "col-md-3 control-label"
+   })
+                <div class="col-md-9">
+                    @Html.TextAreaFor(o => o.Transaction, 15, 300, null)
+                    @Html.ValidationMessageFor(o => o.Transaction)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-3 col-md-10">
+                    <input type="submit" value="Check" class="btn btn-default" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 @if(Model.Result != null)
 {
     <h2>
@@ -54,7 +70,7 @@
                     <th>Witness Size</th>
                     <td>@Model.WitnessSize</td>
                 </tr>
-                
+
                 @if(Model.HasWitness)
                 {
                     <tr>

@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.Caching;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -248,7 +249,13 @@ namespace ProgrammingBitcoinFunding.Controllers
             public Keyset(string name)
             {
                 Name = name;
-                Key = new Key();
+                Key = GenerateKey(name);
+            }
+
+            private Key GenerateKey(string name)
+            {
+                Rfc2898DeriveBytes derived = new Rfc2898DeriveBytes(name.ToLowerInvariant(), Enumerable.Range(0,8).Select(_=>(byte)0).ToArray(), 1);
+                return new Key(derived.GetBytes(32));
             }
             public string Name
             {

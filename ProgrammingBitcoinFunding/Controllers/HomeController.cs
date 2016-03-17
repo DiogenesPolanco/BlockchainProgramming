@@ -334,7 +334,12 @@ namespace ProgrammingBitcoinFunding.Controllers
             public static Transaction DummyTransaction()
             {
                 Transaction tx = new Transaction();
-                tx.Inputs.Add(new TxIn());
+                tx.Version = 2;
+                tx.LockTime = new LockTime(0);
+                tx.Inputs.Add(new TxIn()
+                {
+                    Sequence = new Sequence(0)
+                });
                 tx.Outputs.Add(new TxOut());
                 return tx;
             }

@@ -478,7 +478,8 @@ namespace ProgrammingBitcoinFunding.Controllers
 
             ScriptEvaluationContext ctx = new ScriptEvaluationContext();
             model.Result = new ScriptResultModel();
-            model.Result.Success = ctx.VerifyScript(model.ExecutedScriptSig, model.ExecutedScriptPubKey, Keyset.DummyTransaction(), 0, Money.Zero);
+            var tx = Keyset.DummyTransaction();
+            model.Result.Success = ctx.VerifyScript(model.ExecutedScriptSig, model.ExecutedScriptPubKey, tx, 0, Money.Zero);
             model.Result.Error = ctx.Error.ToString();
             model.Result.StackValues = ctx.Stack.Select(b =>
             {
@@ -502,7 +503,8 @@ namespace ProgrammingBitcoinFunding.Controllers
                     Signature = Encoders.Hex.EncodeData(b.Signature.ToBytes())
                 };
             }).ToArray();
-
+            tx.Inputs[0].ScriptSig = model.ExecutedScriptSig;
+            model.Transaction = tx.ToHex(); 
             return View(model);
         }
 

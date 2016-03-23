@@ -54,6 +54,12 @@ namespace ProgrammingBitcoinFunding.Models
             get;
             set;
         }
+
+        public string Transaction
+        {
+            get;
+            set;
+        }
     }
 
     public class ScriptResultModel

@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Blockchain Programming in C#</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
 </head>
 <body>
@@ -17,21 +17,49 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Blockchain Programming", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                @Html.ActionLink("Who am I ?", "aboutme", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                @Html.ActionLink("Segwit", "TransactionCheck", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                @Html.ActionLink("MAST", "MAST", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                @Html.ActionLink("Script", "ScriptCheck", "Home", new
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            @Html.ActionLink("Blockchain Programming", "Index", "Home", new
+               {
+                   area = ""
+               }, new
+               {
+                   @class = "navbar-brand"
+               })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Segwit", "TransactionCheck", "Home", new
            {
                area = ""
            }, new
            {
                @class = "navbar-brand"
            })
+                        </li>
+                        <li>
+                            @Html.ActionLink("MAST", "MAST", "Home", new
+           {
+               area = ""
+           }, new
+           {
+               @class = "navbar-brand"
+           })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Script", "ScriptCheck", "Home", new
+           {
+               area = ""
+           }, new
+           {
+               @class = "navbar-brand"
+           })
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
+                <ul class="nav navbar-nav"></ul>
             </div>
         </div>
     </div>

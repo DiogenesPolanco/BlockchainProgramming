@@ -23,6 +23,25 @@ textarea {
     max-width: 280px;
 }
 
+a img
+{
+	border-color: lightgray;
+}
+
 .field-validation-error {
 	color: red;
+}
+
+
+.navbar-inverse{
+	background-color: white;
+}
+
+.navbar-inverse .navbar-nav > li > a{
+	color: hsl(0, 0%, 40%);
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+  color: hsl(0, 0%, 0%);
+  background-color: transparent;
 }

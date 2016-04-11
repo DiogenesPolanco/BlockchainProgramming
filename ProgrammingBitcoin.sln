@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgrammingBitcoin", "ProgrammingBitcoin\ProgrammingBitcoin.csproj", "{090CE034-56C0-4294-8220-426FFC804220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgrammingBitcoinFunding", "ProgrammingBitcoinFunding\ProgrammingBitcoinFunding.csproj", "{C40D8071-95EA-4489-9439-428E47A25EEB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgrammingBitcoinWebsite", "ProgrammingBitcoinWebsite\ProgrammingBitcoinFunding.csproj", "{C40D8071-95EA-4489-9439-428E47A25EEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0231CFC4-5083-448A-AB6F-94E96453E2EF}"
 	ProjectSection(SolutionItems) = preProject

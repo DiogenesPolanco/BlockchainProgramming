@@ -158,3 +158,4 @@ $RECYCLE.BIN/
 .DS_Store
 
 Build/DeployClient.proj
+/.vs/config/applicationhost.config

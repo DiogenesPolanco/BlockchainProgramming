@@ -170,7 +170,7 @@ namespace ProgrammingBitcoinFunding.Controllers
         public ViewResult TransactionCheck(TransactionCheckModel model)
         {
             model = model ?? new TransactionCheckModel();
-            QBitNinjaClient client = new QBitNinjaClient("https://segnet.metaco.com/", Network.SegNet);
+            QBitNinjaClient client = new QBitNinjaClient(Network.TestNet);
             if(model.Transaction != null)
             {
                 Transaction tx = null;
@@ -536,7 +536,7 @@ namespace ProgrammingBitcoinFunding.Controllers
             Transaction tx = null;
             if(txid != null && uint256.TryParse(txid, out id))
             {
-                QBitNinjaClient client = new QBitNinjaClient("https://segnet.metaco.com/", Network.SegNet);
+                QBitNinjaClient client = new QBitNinjaClient(Network.TestNet);
                 var result = client.GetTransaction(id).Result;
                 if(result != null)
                     tx = result.Transaction;
@@ -544,7 +544,7 @@ namespace ProgrammingBitcoinFunding.Controllers
 
             return TransactionCheck(new TransactionCheckModel()
             {
-                Transaction = tx == null ? "01000000000101cecd90cd38ac6858c47f2fe9f28145d6e18f9c5abc7ef1a41e2f19e6fe0362580100000000ffffffff0130b48d06000000001976a91405481b7f1d90c5a167a15b00e8af76eb6984ea5988ac0247304402206104c335e4adbb920184957f9f710b09de17d015329fde6807b9d321fd2142db02200b24ad996b4aa4ff103000348b5ad690abfd9fddae546af9e568394ed4a83113012103a65786c1a48d4167aca08cf6eb8eed081e13f45c02dc6000fd8f3bb16242579a00000000" : tx.ToHex()
+                Transaction = tx == null ? "0100000000010115e180dc28a2327e687facc33f10f2a20da717e5548406f7ae8b4c811072f856040000002322002001d5d92effa6ffba3efa379f9830d0f75618b13393827152d26e4309000e88b1ffffffff0188b3f505000000001976a9141d7cd6c75c2e86f4cbf98eaed221b30bd9a0b92888ac02473044022038421164c6468c63dc7bf724aa9d48d8e5abe3935564d38182addf733ad4cd81022076362326b22dd7bfaf211d5b17220723659e4fe3359740ced5762d0e497b7dcc012321038262a6c6cec93c2d3ecd6c6072efea86d02ff8e3328bbd0242b20af3425990acac00000000" : tx.ToHex()
             });
         }
 

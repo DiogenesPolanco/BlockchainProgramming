@@ -45,47 +45,57 @@ namespace ProgrammingBitcoinFunding.Controllers
         }
 
         public static MakersModel GetMakers()
-        {
-            QBitNinjaClient client = CreateClient();
-            var balance = client.GetBalance(new BitcoinPubKeyAddress("1KF8kUVHK42XzgcmJF4Lxz4wcL5WDL97PB")).Result;
+		{
+			QBitNinjaClient client = CreateClient();
+			var balance = client.GetBalance(new BitcoinPubKeyAddress("1KF8kUVHK42XzgcmJF4Lxz4wcL5WDL97PB"));
 
-            MakersModel makers = new MakersModel();
-            var tip = client.GetBlock(new BlockFeature(SpecialFeature.Last), true).Result;
-            makers.Height = tip.AdditionalInformation.Height;
-            var last = (DateTimeOffset.UtcNow - tip.AdditionalInformation.BlockHeader.BlockTime);
-            makers.Time = last.Hours + " h " + last.Minutes + " min " + last.Seconds + " sec ago";
+			MakersModel makers = new MakersModel();
+			var tip = client.GetBlock(new BlockFeature(SpecialFeature.Last), true);
+			makers.Height = tip.Result.AdditionalInformation.Height;
+			var last = (DateTimeOffset.UtcNow - tip.Result.AdditionalInformation.BlockHeader.BlockTime);
+			makers.Time = last.Hours + " h " + last.Minutes + " min " + last.Seconds + " sec ago";
+			WarmCache(balance);
+			foreach(var maker in balance.Result.Operations
+				   .Where(o => o.Amount >= Money.Coins(0.004m))
+				   .Select(o => new
+				   {
+					   Tx = GetTransaction(o.TransactionId).Result,
+					   Op = o
+				   })
+				   .Where(o => o.Tx != null && !o.Tx.IsCoinbase)
+				   .OrderByDescending(o => ExtractWords(o.Tx.Transaction) == null ? 0 : 1)
+				   .ThenByDescending(o => o.Op.Amount.Satoshi)
+				   .ThenByDescending(o => o.Op.Confirmations)
+				   )
+			{
+				var m = new Maker();
+				m.TransactionId = maker.Tx.TransactionId;
+				m.TransactionUri = new Uri("https://api.qbit.ninja/transactions/" + m.TransactionId);
+				m.Address = maker.Tx.Transaction.Inputs[0].ScriptSig.GetSignerAddress(Network.Main);
+				m.AddressUri = new Uri("https://api.qbit.ninja/balances/" + m.Address);
+				m.Amount = maker.Op.Amount;
+				m.KindWords = ExtractWords(maker.Tx.Transaction);
+				if(m.KindWords == null)
+				{
+					m.KindWords = "(lazy)";
+				}
+				m.Position = makers.Makers.Count + 1;
+				makers.Makers.Add(m);
+			}
+			return makers;
+		}
 
-            foreach(var maker in balance.Operations
-                   .Where(o => o.Amount >= Money.Coins(0.004m))
-                   .Select(o => new
-                   {
-                       Tx = GetTransaction(o.TransactionId),
-                       Op = o
-                   })
-                   .Where(o => o.Tx != null && !o.Tx.IsCoinbase)
-                   .OrderByDescending(o => ExtractWords(o.Tx.Transaction) == null ? 0 : 1)
-                   .ThenByDescending(o => o.Op.Amount.Satoshi)
-                   .ThenByDescending(o => o.Op.Confirmations)
-                   )
-            {
-                var m = new Maker();
-                m.TransactionId = maker.Tx.TransactionId;
-                m.TransactionUri = new Uri("http://api.qbit.ninja/transactions/" + m.TransactionId);
-                m.Address = maker.Tx.Transaction.Inputs[0].ScriptSig.GetSignerAddress(Network.Main);
-                m.AddressUri = new Uri("http://api.qbit.ninja/balances/" + m.Address);
-                m.Amount = maker.Op.Amount;
-                m.KindWords = ExtractWords(maker.Tx.Transaction);
-                if(m.KindWords == null)
-                {
-                    m.KindWords = "(lazy)";
-                }
-                m.Position = makers.Makers.Count + 1;
-                makers.Makers.Add(m);
-            }
-            return makers;
-        }
+		private static void WarmCache(Task<BalanceModel> balance)
+		{
+			var fetching = balance.Result
+							.Operations
+							.Where(o => o.Amount >= Money.Coins(0.004m))
+							.Select(o => GetTransaction(o.TransactionId))
+							.ToArray();
+			Task.WaitAll(fetching.ToArray());
+		}
 
-        private static string ExtractWords(Transaction transaction)
+		private static string ExtractWords(Transaction transaction)
         {
             try
             {
@@ -103,17 +113,18 @@ namespace ProgrammingBitcoinFunding.Controllers
         }
 
         private static MemoryCache _cache = MemoryCache.Default;
-        private static GetTransactionResponse GetTransaction(uint256 txId)
+		
+        private static async Task<GetTransactionResponse> GetTransaction(uint256 txId)
         {
             var result = _cache.Get("tx" + txId) as GetTransactionResponse;
             if(result != null)
                 return result;
-            result = CreateClient().GetTransaction(txId).Result;
+            result = await CreateClient().GetTransaction(txId).ConfigureAwait(false);
             if(result == null)
                 return null;
             _cache.Add("tx" + txId, result, new CacheItemPolicy()
             {
-                SlidingExpiration = TimeSpan.FromMinutes(60)
+                SlidingExpiration = TimeSpan.FromMinutes(RandomUtils.GetUInt32() % 60 + 1)
             });
             return result;
         }

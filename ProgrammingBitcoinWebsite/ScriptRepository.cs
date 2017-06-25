@@ -45,6 +45,11 @@ namespace ProgrammingBitcoinFunding
         {
             return CloudStorageAccount.Parse(ConfigurationManager.AppSettings["AzureStorage"]).CreateCloudTableClient().GetTableReference("SavedScripts");
         }
+
+		public Task CreateIfNotExistsAsync()
+		{
+			return GetTable().CreateIfNotExistsAsync();
+		}
         public void InsertScript(SavedScript script)
         {
             var table = GetTable();

@@ -16,6 +16,7 @@ namespace ProgrammingBitcoinFunding
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-        }
+			new ScriptRepository().CreateIfNotExistsAsync();
+		}
     }
 }

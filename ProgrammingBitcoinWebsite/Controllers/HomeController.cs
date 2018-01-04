@@ -71,7 +71,7 @@ namespace ProgrammingBitcoinFunding.Controllers
 				var m = new Maker();
 				m.TransactionId = maker.Tx.TransactionId;
 				m.TransactionUri = new Uri("https://api.qbit.ninja/transactions/" + m.TransactionId);
-				m.Address = maker.Tx.Transaction.Inputs[0].ScriptSig.GetSignerAddress(Network.Main);
+				m.Address = maker.Tx.Transaction.Inputs[0].GetSigner().ScriptPubKey.GetDestinationAddress(Network.Main);
 				m.AddressUri = new Uri("https://api.qbit.ninja/balances/" + m.Address);
 				m.Amount = maker.Op.Amount;
 				m.KindWords = ExtractWords(maker.Tx.Transaction);
@@ -456,7 +456,7 @@ namespace ProgrammingBitcoinFunding.Controllers
             {
                 model.ExecutedScriptPubKey = GetExecutedScript(model.ScriptPubKey, Script.Empty, sets);
             }
-            catch(FormatException ex)
+            catch(FormatException)
             {
                 ModelState.AddModelError("ScriptPubKey", "Parsing error");
                 parseProblem = true;
@@ -471,7 +471,7 @@ namespace ProgrammingBitcoinFunding.Controllers
             {
                 model.ExecutedScriptSig = GetExecutedScript(model.ScriptSig, model.ExecutedScriptPubKey ?? Script.Empty, sets);
             }
-            catch(FormatException ex)
+            catch(FormatException)
             {
                 ModelState.AddModelError("ScriptSig", "Parsing error");
                 parseProblem = true;

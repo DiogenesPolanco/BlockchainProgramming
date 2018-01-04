@@ -433,7 +433,7 @@ namespace ProgrammingBitcoin
 
         private void Code6()
         {
-            var blockr = new BlockrTransactionRepository();
+            var blockr = new QBitNinjaTransactionRepository(Network.Main);
             Transaction fundingTransaction = blockr.Get("0b948b0674a3dbd229b2a0b436e0fce8aa84e6de28b088c610d110c2bf54acb4");
 
             Transaction payment = new Transaction();
@@ -497,7 +497,7 @@ namespace ProgrammingBitcoin
 
         private void Code5()
         {
-            var blockr = new BlockrTransactionRepository();
+            var blockr = new QBitNinjaTransactionRepository(Network.Main);
             Transaction transaction = blockr.Get("0b948b0674a3dbd229b2a0b436e0fce8aa84e6de28b088c610d110c2bf54acb4");
             Console.WriteLine(transaction.ToString());
         }

@@ -445,7 +445,7 @@ namespace ProgrammingBitcoin
             var programmingBlockchain = new BitcoinPubKeyAddress("1KF8kUVHK42XzgcmJF4Lxz4wcL5WDL97PB");
             payment.Outputs.Add(new TxOut()
             {
-                Value = Money.Coins(0.004m),
+                Value = Money.Coins(0.0004m),
                 ScriptPubKey = programmingBlockchain.ScriptPubKey
             });
             payment.Outputs.Add(new TxOut()

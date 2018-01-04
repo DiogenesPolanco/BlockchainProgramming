@@ -56,7 +56,7 @@ namespace ProgrammingBitcoinFunding.Controllers
 			makers.Time = last.Hours + " h " + last.Minutes + " min " + last.Seconds + " sec ago";
 			WarmCache(balance);
 			foreach(var maker in balance.Result.Operations
-				   .Where(o => o.Amount >= Money.Coins(0.004m))
+				   .Where(o => o.Amount >= Money.Coins(0.0004m))
 				   .Select(o => new
 				   {
 					   Tx = GetTransaction(o.TransactionId).Result,
@@ -89,7 +89,7 @@ namespace ProgrammingBitcoinFunding.Controllers
 		{
 			var fetching = balance.Result
 							.Operations
-							.Where(o => o.Amount >= Money.Coins(0.004m))
+							.Where(o => o.Amount >= Money.Coins(0.0004m))
 							.Select(o => GetTransaction(o.TransactionId))
 							.ToArray();
 			Task.WaitAll(fetching.ToArray());
